@@ -54,6 +54,12 @@
         var login_data = '{"type":"login","client_name":"'+name.replace(/"/g, '\\"')+'","room_id":'+room_id+'}';
         console.log("websocket握手成功，发送登录数据:"+login_data);
         ws.send(login_data);
+
+        setInterval(function (){
+            ws.send(JSON.stringify({
+                type: 'ping'
+            }));
+        },2000);
     }
 
     // 服务端发来消息时
@@ -63,9 +69,8 @@
         var data = JSON.parse(e.data);
         switch(data['type']){
             // 服务端ping客户端
-            case 'ping':
-                ws.send('{"type":"pong"}');
-                break;;
+            case 'pong':
+                break;
             // 登录 更新用户列表
             case 'login':
                 var client_name = data['client_name'];
