@@ -20,6 +20,7 @@ class ComposerStaticInit
         'G' => 
         array (
             'GatewayWorker\\' => 14,
+            'GatewayClient\\' => 14,
         ),
         'A' =>
         array (
@@ -39,6 +40,10 @@ class ComposerStaticInit
         'GatewayWorker\\' => 
         array (
             0 => __DIR__ . '/../..' . '/core/framework/gatewayworker',
+        ),
+        'GatewayClient\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/core/framework/gatewayclient',
         ),
         'App\\' =>
         array (
