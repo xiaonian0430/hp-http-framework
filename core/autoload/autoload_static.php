@@ -13,6 +13,10 @@ class ComposerStaticInit
         array (
             'Workerman\\' => 10,
         ),
+        'R' =>
+        array (
+            'React\\EventLoop\\' => 16,
+        ),
         'G' => 
         array (
             'GatewayWorker\\' => 14,
@@ -27,6 +31,10 @@ class ComposerStaticInit
         'Workerman\\' => 
         array (
             0 => __DIR__ . '/../..' . '/core/framework/workerman',
+        ),
+        'React\\EventLoop\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/core/react/event-loop/src',
         ),
         'GatewayWorker\\' => 
         array (

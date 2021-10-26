@@ -6,12 +6,15 @@
  * @datetime: 2021-09-14 10:00
  */
 use Workerman\Worker;
+use Workerman\Protocols\Http\Request;
+use Workerman\Connection\TcpConnection;
 
 //初始化
 ini_set('display_errors', 'on');
 defined('IN_PHAR') or define('IN_PHAR', boolval(\Phar::running(false)));
 defined('SERVER_ROOT') or define('SERVER_ROOT', IN_PHAR ? \Phar::running() : realpath(getcwd()));
 defined('PUBLIC_ROOT') or define('PUBLIC_ROOT', SERVER_ROOT.'/public'); //不能加后缀
+
 // 检查扩展或环境
 if(strpos(strtolower(PHP_OS), 'win') === 0) {
     exit("start.php not support windows.\n");
@@ -52,15 +55,16 @@ if(!is_dir($temp_path)){
 Worker::$stdoutFile = $temp_path.'/error.log';
 Worker::$logFile = $temp_path.'/log.log';
 
-$address=CONFIG['WEB']['PROTOCOL'].'://'.CONFIG['WEB']['LISTEN_ADDRESS'].':'.CONFIG['WEB']['PORT'];
+$address=CONFIG['HTTP_FRAMEWORK']['PROTOCOL'].'://'.CONFIG['HTTP_FRAMEWORK']['LISTEN_ADDRESS'].':'.CONFIG['HTTP_FRAMEWORK']['PORT'];
 $http = new Worker($address);
 
-$http->name= CONFIG['WEB']['SERVER_NAME'];
+$http->name= CONFIG['HTTP_FRAMEWORK']['SERVER_NAME'];
 
 // 进程数量
-$http->count = CONFIG['WEB']['PROCESS_COUNT'];
+$http->count = CONFIG['HTTP_FRAMEWORK']['PROCESS_COUNT'];
 
-$http->onMessage = function ($connection, $request) {
+// 接收请求
+$http->onMessage = function (TcpConnection $connection, Request $request) {
     //路由分发: 模块=module 类=class 方法=function
     $path=trim($request->path(),'/');
     $dot=strpos($path, '.');

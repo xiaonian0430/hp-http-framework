@@ -10,5 +10,6 @@ $baseDir = dirname($vendorDir);
 return array(
     'App\\' => array($baseDir . '/app'),
     'Workerman\\' => array($baseDir . '/core/framework/workerman'),
+    'React\EventLoop\\' => array($baseDir . '/core/react/event-loop/src'),
     'GatewayWorker\\' => array($baseDir . '/core/framework/gatewayworker')
 );
