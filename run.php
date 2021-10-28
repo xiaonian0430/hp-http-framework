@@ -15,6 +15,15 @@ defined('IN_PHAR') or define('IN_PHAR', boolval(\Phar::running(false)));
 defined('SERVER_ROOT') or define('SERVER_ROOT', IN_PHAR ? \Phar::running() : realpath(getcwd()));
 defined('PUBLIC_ROOT') or define('PUBLIC_ROOT', SERVER_ROOT.'/public'); //不能加后缀
 
+//创建临时目录
+$temp_path=SERVER_ROOT.'/temp';
+$log_path=SERVER_ROOT.'/temp/log';
+if(!is_dir($log_path)){
+    mkdir($log_path, 0777, true);
+}
+defined('TEMP_ROOT') or define('TEMP_ROOT', $temp_path);
+defined('LOG_ROOT') or define('LOG_ROOT', $log_path);
+
 // 检查扩展或环境
 if(strpos(strtolower(PHP_OS), 'win') === 0) {
     exit("start.php not support windows.\n");
@@ -45,15 +54,9 @@ if (file_exists($config_path)) {
 }
 defined('CONFIG') or define('CONFIG', $conf);
 
-//创建临时目录
-$temp_path='./temp/log';
-if(!is_dir($temp_path)){
-    mkdir($temp_path, 0777, true);
-}
-
 //初始化worker
-Worker::$stdoutFile = $temp_path.'/error.log';
-Worker::$logFile = $temp_path.'/log.log';
+Worker::$stdoutFile = LOG_ROOT.'/error.log';
+Worker::$logFile = LOG_ROOT.'/log.log';
 
 $address=CONFIG['HTTP_FRAMEWORK']['PROTOCOL'].'://'.CONFIG['HTTP_FRAMEWORK']['LISTEN_ADDRESS'].':'.CONFIG['HTTP_FRAMEWORK']['PORT'];
 $http = new Worker($address);
