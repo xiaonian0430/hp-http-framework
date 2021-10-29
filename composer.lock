@@ -1,0 +1,62 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "c013d8829c7ae96887fa25162cf2e756",
+    "packages": [
+        {
+            "name": "hiper/hp-core",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xiaonian0430/hp-core.git",
+                "reference": "c9a7872df893df81a8c19509602ac84e9701a446"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xiaonian0430/hp-core/zipball/c9a7872df893df81a8c19509602ac84e9701a446",
+                "reference": "c9a7872df893df81a8c19509602ac84e9701a446",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GatewayWorker\\": "gatewayworker/",
+                    "GatewayClient\\": "gatewayclient/",
+                    "Workerman\\": "workerman/",
+                    "React\\EventLoop\\": "react/event-loop/src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "support": {
+                "issues": "https://github.com/xiaonian0430/hp-core/issues",
+                "source": "https://github.com/xiaonian0430/hp-core/tree/1.0.1"
+            },
+            "time": "2021-10-29T07:55:49+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.0",
+        "ext-json": "*"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.1.0"
+}
