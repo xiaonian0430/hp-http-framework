@@ -9,7 +9,6 @@ return [
         'SERVER_NAME'    => 'HTTP-FRAMEWORK',
         'PROCESS_COUNT'     => 4,  //进程数
         'LISTEN_ADDRESS' => '0.0.0.0',
-        'PORT'           => 5151,
-        'PROTOCOL'       => 'http'
+        'PORT'           => 5151
     ]
 ];

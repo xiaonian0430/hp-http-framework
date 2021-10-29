@@ -58,7 +58,7 @@ defined('CONFIG') or define('CONFIG', $conf);
 Worker::$stdoutFile = LOG_ROOT.'/error.log';
 Worker::$logFile = LOG_ROOT.'/log.log';
 
-$address=CONFIG['HTTP_FRAMEWORK']['PROTOCOL'].'://'.CONFIG['HTTP_FRAMEWORK']['LISTEN_ADDRESS'].':'.CONFIG['HTTP_FRAMEWORK']['PORT'];
+$address='http://'.CONFIG['HTTP_FRAMEWORK']['LISTEN_ADDRESS'].':'.CONFIG['HTTP_FRAMEWORK']['PORT'];
 $http = new Worker($address);
 
 $http->name= CONFIG['HTTP_FRAMEWORK']['SERVER_NAME'];
@@ -99,7 +99,7 @@ $http->onMessage = function (TcpConnection $connection, Request $request) {
         }
     }else{
         $instance=new App\HttpController\Controller($connection, $request);
-        $instance->writeHtml($path);
+        $instance->writeFile($path);
     }
 };
 

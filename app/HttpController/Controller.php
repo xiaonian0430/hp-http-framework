@@ -30,7 +30,7 @@ class Controller {
         $this->connection->send($response);
     }
 
-    public function writeHtml($file) {
+    public function writeFile($file) {
         $response=new Response(200, [
             'Server'=>'InfobirdCloud',
             'Content-type'=>'application/html;charset=utf-8'
