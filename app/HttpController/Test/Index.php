@@ -18,6 +18,6 @@ class Index extends Basic
     public function index()
     {
         //必须放在pubLic目录下面
-        $this->writeHtml('html/test/index/index.html');
+        $this->writeFile('html/test/index/index.html');
     }
 }
