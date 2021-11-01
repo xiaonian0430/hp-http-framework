@@ -8,6 +8,7 @@
 use Workerman\Worker;
 use Workerman\Protocols\Http\Request;
 use Workerman\Connection\TcpConnection;
+use HP\Http\App;
 
 //初始化
 ini_set('display_errors', 'on');
@@ -21,8 +22,6 @@ $log_path=SERVER_ROOT.'/temp/log';
 if(!is_dir($log_path)){
     mkdir($log_path, 0777, true);
 }
-defined('TEMP_ROOT') or define('TEMP_ROOT', $temp_path);
-defined('LOG_ROOT') or define('LOG_ROOT', $log_path);
 
 // 检查扩展或环境
 if(strpos(strtolower(PHP_OS), 'win') === 0) {
@@ -61,53 +60,24 @@ if (file_exists($config_path)) {
 defined('CONFIG') or define('CONFIG', $conf);
 
 //初始化worker
-Worker::$stdoutFile = LOG_ROOT.'/error.log';
-Worker::$logFile = LOG_ROOT.'/log.log';
+Worker::$stdoutFile = $log_path.'/error.log';
+Worker::$logFile = $log_path.'/log.log';
+Worker::$pidFile = $temp_path.'/http.pid';
 
-$address='http://'.CONFIG['HTTP_FRAMEWORK']['LISTEN_ADDRESS'].':'.CONFIG['HTTP_FRAMEWORK']['PORT'];
+//实例化
+$address='http://'.CONFIG['HTTP_SERVER']['LISTEN_ADDRESS'].':'.CONFIG['HTTP_SERVER']['PORT'];
 $http = new Worker($address);
 
-$http->name= CONFIG['HTTP_FRAMEWORK']['SERVER_NAME'];
+//进程名称
+$http->name= CONFIG['HTTP_SERVER']['SERVER_NAME'];
 
 // 进程数量
-$http->count = CONFIG['HTTP_FRAMEWORK']['PROCESS_COUNT'];
+$http->count = CONFIG['HTTP_SERVER']['PROCESS_COUNT'];
 
 // 接收请求
 $http->onMessage = function (TcpConnection $connection, Request $request) {
-    //路由分发: 模块=module 类=class 方法=function
-    $path=trim($request->path(),'/');
-    $dot=strpos($path, '.');
-    if($dot===false){
-        $paths=explode('/',$path);
-        if(isset($paths[0])){
-            $module=ucwords($paths[0]);
-        }else{
-            $module='Index';
-        }
-        if(isset($paths[1])){
-            $class_name=ucwords($paths[1]);
-        }else{
-            $class_name='Index';
-        }
-        $function = $paths[2] ?? 'index';
-        $class='App\HttpController\\'.$module.'\\'.$class_name;
-        if(class_exists($class)){
-            $instance=new $class($connection, $request);
-            if(method_exists($instance, $function)){
-                $instance->$function();
-            }else{
-                $instance=new App\HttpController\Controller($connection, $request);
-                $instance->writeJsonNoFound();
-            }
-        }else{
-            $instance=new App\HttpController\Controller($connection, $request);
-            $instance->writeJsonNoFound();
-        }
-    }else{
-        $instance=new App\HttpController\Controller($connection, $request);
-        $instance->writeFile($path);
-    }
+    new App($connection, $request);
 };
 
-// 运行所有服务
+// 启动服务
 Worker::runAll();
