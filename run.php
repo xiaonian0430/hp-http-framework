@@ -6,8 +6,6 @@
  * @datetime: 2021-09-14 10:00
  */
 use Workerman\Worker;
-use Workerman\Protocols\Http\Request;
-use Workerman\Connection\TcpConnection;
 use HP\Http\App;
 
 //初始化
@@ -66,16 +64,16 @@ Worker::$pidFile = $temp_path.'/http.pid';
 
 //实例化
 $address='http://'.CONFIG['HTTP_SERVER']['LISTEN_ADDRESS'].':'.CONFIG['HTTP_SERVER']['PORT'];
-$http = new Worker($address);
+$http_server = new Worker($address);
 
 //进程名称
-$http->name= CONFIG['HTTP_SERVER']['SERVER_NAME'];
+$http_server->name= CONFIG['HTTP_SERVER']['SERVER_NAME'];
 
 // 进程数量
-$http->count = CONFIG['HTTP_SERVER']['PROCESS_COUNT'];
+$http_server->count = CONFIG['HTTP_SERVER']['PROCESS_COUNT'];
 
 // 接收请求
-$http->onMessage = function (TcpConnection $connection, Request $request) {
+$http_server->onMessage = function ($connection, $request) {
     new App($connection, $request);
 };
 
