@@ -12,7 +12,16 @@ class Index extends Basic
 {
     public function api()
     {
-        $this->writeJson(200, ['a'=>12], '吃了');
+        $s = microtime(true);
+        for ($c = 100; $c--;) {
+            go(function () use( $c ) {
+                for ($n = 100; $n--;) {
+                    echo 'time: '.$c.'-'.$n.PHP_EOL;
+                }
+            });
+        }
+        $used_time = (microtime(true) - $s);
+        $this->writeJson(200, ['a'=>12, 'used_time'=>$used_time], '吃了');
     }
 
     public function index()
