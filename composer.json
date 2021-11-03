@@ -6,9 +6,10 @@
         }
     },
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.2",
         "ext-json": "*",
-        "hiper/hp-core": "*"
+        "hiper/hp-core": "*",
+        "predis/predis": "v1.1.9"
     },
     "require-dev": {
         "swoole/ide-helper": "*"

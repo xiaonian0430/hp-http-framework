@@ -13,20 +13,43 @@ class Index extends Basic
     public function api()
     {
         $s = microtime(true);
-        for ($c = 100; $c--;) {
-            go(function () use( $c ) {
-                for ($n = 100; $n--;) {
-                    echo 'time: '.$c.'-'.$n.PHP_EOL;
-                }
-            });
-        }
         $used_time = (microtime(true) - $s);
-        $this->writeJson(200, ['a'=>12, 'used_time'=>$used_time], '吃了');
+        $options = [
+            'parameters' => [
+                'database' => 10,
+            ],
+        ];
+        $client = new \Predis\Client('tcp://120.24.187.47:51012', $options);
+        $client->set('test', 12);
+        $this->writeJson(200, ['api'=>1, 'used_time'=>$used_time], '吃了');
     }
 
-    public function index()
+    public function html()
     {
         //必须放在pubLic目录下面
         $this->writeFile('html/test/index/index.html');
+    }
+
+    public function redisTest()
+    {
+        \Swoole\Runtime::enableCoroutine();
+        $s = microtime(true);
+        \Co\run(function() {
+            for ($c = 100; $c--;) {
+                go(function () use($c){
+                    $options = [
+                        'parameters' => [
+                            'database' => 10,
+                        ],
+                    ];
+                    $client = new \Predis\Client('tcp://120.24.187.47:51012', $options);
+                    for ($n = 100; $n--;) {
+                        $client->set('test_'.$c.'_'.$n, 12);
+                    }
+                });
+            }
+        });
+        $used_time = (microtime(true) - $s);
+        $this->writeJson(200, ['api'=>1, 'used_time'=>$used_time], '吃了');
     }
 }
