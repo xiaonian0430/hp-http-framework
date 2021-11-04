@@ -32,23 +32,19 @@ class Index extends Basic
 
     public function redisTest()
     {
-        \Swoole\Runtime::enableCoroutine();
+        \Swoole\Runtime::enableCoroutine(true, $flags = SWOOLE_HOOK_ALL);
         $s = microtime(true);
-        \Co\run(function() {
-            for ($c = 100; $c--;) {
-                go(function () use($c){
-                    $options = [
-                        'parameters' => [
-                            'database' => 10,
-                        ],
-                    ];
-                    $client = new \Predis\Client('tcp://120.24.187.47:51012', $options);
-                    for ($n = 100; $n--;) {
-                        $client->set('test_'.$c.'_'.$n, 12);
-                    }
-                });
-            }
-        });
+        for($i=0;$i<800;$i++){
+            go(function () use($i) {
+                $options = [
+                    'parameters' => [
+                        'database' => 10,
+                    ],
+                ];
+                $client = new \Predis\Client('tcp://120.24.187.47:51012', $options);
+                $client->set('test_12_'.$i, 12);
+            });
+        }
         $used_time = (microtime(true) - $s);
         $this->writeJson(200, ['api'=>1, 'used_time'=>$used_time], '吃了');
     }
