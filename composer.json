@@ -6,10 +6,11 @@
         }
     },
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.3",
         "ext-json": "*",
         "hiper/hp-core": "*",
-        "predis/predis": "v1.1.9"
+        "predis/predis": "v1.1.9",
+        "hiper/hp-database": "*"
     },
     "require-dev": {
         "swoole/ide-helper": "*"
