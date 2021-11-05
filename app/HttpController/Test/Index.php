@@ -8,6 +8,7 @@
 namespace App\HttpController\Test;
 use App\HttpController\Basic;
 use HP\Database\MysqliDb;
+use HP\Log\Log;
 
 class Index extends Basic
 {
@@ -113,5 +114,12 @@ class Index extends Basic
         }
         $used_time = (microtime(true) - $s);
         $this->writeJson(200, ['mysqlTestPatch'=>1, 'used_time'=>$used_time], '吃了');
+    }
+
+    public function logTest(){
+        $s = microtime(true);
+        Log::info('123123123' ,['sdf'=>12, 'abd'=>2]);
+        $used_time = (microtime(true) - $s);
+        $this->writeJson(200, ['logTest'=>1, 'used_time'=>$used_time], '吃了');
     }
 }

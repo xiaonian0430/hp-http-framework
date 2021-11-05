@@ -10,7 +10,8 @@
         "ext-json": "*",
         "hiper/hp-core": "*",
         "predis/predis": "v1.1.9",
-        "hiper/hp-database": "*"
+        "hiper/hp-database": "*",
+        "monolog/monolog": "2.3.*"
     },
     "require-dev": {
         "swoole/ide-helper": "*"

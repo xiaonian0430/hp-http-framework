@@ -8,7 +8,6 @@
 use HP\Http\App;
 
 //初始化
-ini_set('display_errors', 'on');
 defined('IN_PHAR') or define('IN_PHAR', boolval(\Phar::running(false)));
 defined('SERVER_ROOT') or define('SERVER_ROOT', IN_PHAR ? \Phar::running() : realpath(getcwd()));
 
