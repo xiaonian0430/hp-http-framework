@@ -7,8 +7,6 @@
 
 namespace App\HttpController\Test;
 use App\HttpController\Basic;
-use HP\Database\MysqliDb;
-use HP\Log\Log;
 
 class Index extends Basic
 {
@@ -70,7 +68,7 @@ class Index extends Basic
         \Swoole\Runtime::enableCoroutine(true, $flags = SWOOLE_HOOK_ALL);
         $s = microtime(true);
         go(function () {
-            $database = new MysqliDb (Array (
+            $database = new \HP\Database\MysqliDb(Array (
                 'host' => '120.25.72.119',
                 'username' => 'root',
                 'password' => 'Kn6Bl4hVTkovGmcECSDR',
@@ -78,9 +76,12 @@ class Index extends Basic
                 'port' => 52341,
                 'prefix' => '',
                 'charset' => 'utf8mb4'));
-            $database->insert('inter_test', [
-                'name' => 'mysqlTest_1212'
-            ]);
+            try {
+                $database->insert('inter_test', [
+                    'name' => 'mysqlTest_1212'
+                ]);
+            } catch (\Exception $e) {
+            }
         });
         $used_time = (microtime(true) - $s);
         $this->writeJson(200, ['mysqlTest'=>1, 'used_time'=>$used_time], '吃了');
@@ -99,7 +100,7 @@ class Index extends Basic
         $s = microtime(true);
         for($i=0;$i<100;$i++){
             go(function () use($i) {
-                $database = new MysqliDb (Array (
+                $database = new \HP\Database\MysqliDb (Array (
                     'host' => '120.25.72.119',
                     'username' => 'root',
                     'password' => 'Kn6Bl4hVTkovGmcECSDR',
@@ -107,9 +108,12 @@ class Index extends Basic
                     'port' => 52341,
                     'prefix' => '',
                     'charset' => 'utf8mb4'));
-                $database->insert('inter_test', [
-                    'name' => 'mysqlTestPatch_'.$i
-                ]);
+                try {
+                    $database->insert('inter_test', [
+                        'name' => 'mysqlTestPatch_' . $i
+                    ]);
+                } catch (\Exception $e) {
+                }
             });
         }
         $used_time = (microtime(true) - $s);
@@ -118,8 +122,30 @@ class Index extends Basic
 
     public function logTest(){
         $s = microtime(true);
-        Log::info('123123123' ,['sdf'=>12, 'abd'=>2]);
+        \HP\Log\Log::info('123123123' ,['sdf'=>12, 'abd'=>2]);
         $used_time = (microtime(true) - $s);
         $this->writeJson(200, ['logTest'=>1, 'used_time'=>$used_time], '吃了');
+    }
+
+    public function mqTest(){
+        $s = microtime(true);
+        $config = \Kafka\ProducerConfig::getInstance();
+        $config->setMetadataRefreshIntervalMs(10000);
+        $config->setMetadataBrokerList('47.106.68.178:59094');
+        $config->setBrokerVersion('1.0.0');
+        $config->setRequiredAck(1);
+        $config->setIsAsyn(false);
+        $config->setProduceInterval(500);
+        $producer = new \Kafka\Producer();
+        $producer->send([
+            [
+                'topic' => 'test1',
+                'value' => 'test1....message.',
+                'key' => 'testKey',
+            ],
+        ]);
+
+        $used_time = (microtime(true) - $s);
+        $this->writeJson(200, ['mqTest'=>1, 'used_time'=>$used_time], 'mqTest');
     }
 }
