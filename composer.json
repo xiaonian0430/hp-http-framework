@@ -12,7 +12,7 @@
         "predis/predis": "v1.1.9",
         "hiper/hp-database": "*",
         "monolog/monolog": "2.3.*",
-        "nmred/kafka-php": "*"
+        "longlang/phpkafka": "*"
     },
     "require-dev": {
         "swoole/ide-helper": "*"

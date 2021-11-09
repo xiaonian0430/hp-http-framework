@@ -128,22 +128,17 @@ class Index extends Basic
     }
 
     public function mqTest(){
+        //需要添加ext-bcmatch
         $s = microtime(true);
-        $config = \Kafka\ProducerConfig::getInstance();
-        $config->setMetadataRefreshIntervalMs(10000);
-        $config->setMetadataBrokerList('47.106.68.178:59094');
-        $config->setBrokerVersion('1.0.0');
-        $config->setRequiredAck(1);
-        $config->setIsAsyn(false);
-        $config->setProduceInterval(500);
-        $producer = new \Kafka\Producer();
-        $producer->send([
-            [
-                'topic' => 'test1',
-                'value' => 'test1....message.',
-                'key' => 'testKey',
-            ],
-        ]);
+        $config = new \longlang\phpkafka\Producer\ProducerConfig();
+        $config->setBootstrapServer('47.106.68.178:59094');
+        $config->setUpdateBrokers(true);
+        $config->setAcks(-1);
+        $producer = new \longlang\phpkafka\Producer\Producer($config);
+        $topic = 'test';
+        $value = (string) microtime(true);
+        $key = uniqid('', true);
+        $producer->send($topic, $value, $key);
 
         $used_time = (microtime(true) - $s);
         $this->writeJson(200, ['mqTest'=>1, 'used_time'=>$used_time], 'mqTest');

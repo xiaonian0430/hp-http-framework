@@ -5,7 +5,9 @@
  * @contact: xiaonian030@163.com
  * @datetime: 2021-09-14 10:00
  */
-use HP\Http\App;
+use HP\Http\App as HttpApp;
+use HP\Task\App as TaskApp;
+use App\Task\Index as TaskIndex;
 
 //初始化
 defined('IN_PHAR') or define('IN_PHAR', boolval(\Phar::running(false)));
@@ -19,9 +21,16 @@ if (file_exists($auto_file)) {
     exit("Please composer install.\n");
 }
 
-//初始化应用
-$app = new App();
+//启动http应用
+$http_app = new HttpApp();
+$http_app->run(false);
 
-//启动
-$app->run();
+//启动task应用
+$task_app = new TaskApp();
+$task_app->run(true, function (){
+    $task_index = new TaskIndex();
+    $task_index->action();
+});
+
+
 
