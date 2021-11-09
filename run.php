@@ -29,11 +29,7 @@ $http_app->run(false);
 $task_app = new TaskApp();
 $task_app->run(true, function ($tag){
     $task_index = new TaskIndex();
-    if($tag==1){
-        $task_index->open();
-    }else{
-        $task_index->close();
-    }
+    $task_index->open();
 });
 
 

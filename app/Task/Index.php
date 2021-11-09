@@ -11,8 +11,6 @@ use longlang\phpkafka\Consumer\Consumer;
 use longlang\phpkafka\Consumer\ConsumerConfig;
 class Index
 {
-    private $consumer;
-    private $timer_id;
     public function open()
     {
         $config = new ConsumerConfig();
@@ -23,31 +21,16 @@ class Index
         $config->setGroupInstanceId('test'); // 分组实例ID，不同的消费者进程请使用不同的设置
         $config->setInterval(0.1);
         $config->setAutoCommit(false); //自动提交数据
-        $this->consumer = new Consumer($config);
+        $consumer = new Consumer($config);
 
         // 每0.2秒执行一次
         $time_interval = 0.2;
-        $this->timer_id=Timer::add($time_interval, function(){
-            $this->fetchData();
-        });
-    }
-
-    private function fetchData(){
-        try {
-            $message = $this->consumer->consume();
+        Timer::add($time_interval, function() use($consumer){
+            $message = $consumer->consume();
             if($message) {
                 var_dump($message->getKey() . ':' . $message->getValue());
-                $this->consumer->ack($message); // 手动提交
+                $consumer->ack($message); // 手动提交
             }
-        }catch (\Throwable $e){}
-    }
-
-    public function close() {
-        try {
-            Timer::del($this->timer_id);
-        }catch (\Throwable $e){}
-        try {
-            $this->consumer->close();
-        }catch (\Throwable $e){}
+        });
     }
 }
