@@ -27,28 +27,23 @@ class Index
 
         // 每0.2秒执行一次
         $time_interval = 0.2;
-        Timer::add($time_interval, function($timer_id){
-            $this->timer_id=$timer_id;
-            $this->fetchData();
+        $this->timer_id=Timer::add($time_interval, function(){
+            try {
+                $message = $this->consumer->consume();
+                if($message) {
+                    var_dump($message->getKey() . ':' . $message->getValue());
+                    $this->consumer->ack($message); // 手动提交
+                }
+            }catch (\Throwable $e){}
         });
     }
 
-    private function fetchData(){
-        try {
-            $message = $this->consumer->consume();
-            if($message) {
-                var_dump($message->getKey() . ':' . $message->getValue());
-                $this->consumer->ack($message); // 手动提交
-            }
-        }catch (\Throwable $e){}
-    }
-
-    public function close() {
-        try {
-            Timer::del($this->timer_id);
-        }catch (\Throwable $e){}
+    public function __destruct() {
         try {
             $this->consumer->close();
+        }catch (\Throwable $e){}
+        try {
+            Timer::del($this->timer_id);
         }catch (\Throwable $e){}
     }
 }
