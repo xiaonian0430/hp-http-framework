@@ -12,9 +12,9 @@ use longlang\phpkafka\Consumer\ConsumerConfig;
 class Index
 {
     private $consumer;
-    public function action()
+    private $timer_id;
+    public function open()
     {
-        echo 'test'.PHP_EOL;
         $config = new ConsumerConfig();
         $config->setBroker('47.106.68.178:59094');
         $config->setTopic('test'); // 主题名称
@@ -27,7 +27,8 @@ class Index
 
         // 每0.2秒执行一次
         $time_interval = 0.2;
-        Timer::add($time_interval, function(){
+        Timer::add($time_interval, function($timer_id){
+            $this->timer_id=$timer_id;
             $this->fetchData();
         });
     }
@@ -39,6 +40,15 @@ class Index
                 var_dump($message->getKey() . ':' . $message->getValue());
                 $this->consumer->ack($message); // 手动提交
             }
+        }catch (\Throwable $e){}
+    }
+
+    public function close() {
+        try {
+            Timer::del($this->timer_id);
+        }catch (\Throwable $e){}
+        try {
+            $this->consumer->close();
         }catch (\Throwable $e){}
     }
 }

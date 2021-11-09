@@ -27,9 +27,13 @@ $http_app->run(false);
 
 //启动task应用
 $task_app = new TaskApp();
-$task_app->run(true, function (){
+$task_app->run(true, function ($tag){
     $task_index = new TaskIndex();
-    $task_index->action();
+    if($tag==1){
+        $task_index->open();
+    }else{
+        $task_index->close();
+    }
 });
 
 
