@@ -14,7 +14,7 @@ class Index extends Basic
     {
         $s = microtime(true);
         $used_time = (microtime(true) - $s);
-        $this->writeJson(200, ['api'=>1, 'used_time'=>$used_time], '吃了');
+        $this->writeJson(200, ['api'=>1, 'used_time'=>$used_time], 'api');
     }
 
     public function html()
@@ -34,14 +34,14 @@ class Index extends Basic
         $client = new \Predis\Client('tcp://120.24.187.47:51012', $options);
         $client->set('test', 12);
         $used_time = (microtime(true) - $s);
-        $this->writeJson(200, ['redisTest'=>1, 'used_time'=>$used_time], '吃了');
+        $this->writeJson(200, ['redisTest'=>1, 'used_time'=>$used_time], 'redisTest');
     }
 
     public function redisTestPatch()
     {
         \Swoole\Runtime::enableCoroutine(true, $flags = SWOOLE_HOOK_ALL);
         $s = microtime(true);
-        for($i=0;$i<800;$i++){
+        for($i=0;$i<3000;$i++){
             go(function () use($i) {
                 $options = [
                     'parameters' => [
@@ -53,7 +53,55 @@ class Index extends Basic
             });
         }
         $used_time = (microtime(true) - $s);
-        $this->writeJson(200, ['redisTestPatch'=>1, 'used_time'=>$used_time], '吃了');
+        $this->writeJson(200, ['redisTestPatch'=>1, 'used_time'=>$used_time], 'redisTestPatch');
+    }
+
+    public function redisClusterTest()
+    {
+        $s = microtime(true);
+        \Swoole\Runtime::enableCoroutine(true, $flags = SWOOLE_HOOK_ALL);
+        go(function () use($s) {
+            $parameters = [
+                'tcp://10.255.0.171:7001',
+                'tcp://10.255.0.171:7002',
+                'tcp://10.255.0.171:7003',
+                'tcp://10.255.0.171:7004',
+                'tcp://10.255.0.171:7005',
+                'tcp://10.255.0.171:7006'
+            ];
+            $options = [
+                'cluster' => 'redis'
+            ];
+            $client = new \Predis\Client($parameters, $options);
+            $client->set('test_'.$s, $s);
+        });
+        $used_time = (microtime(true) - $s);
+        $this->writeJson(200, ['redisClusterTest'=>1, 'used_time'=>$used_time], 'redisClusterTest');
+    }
+
+    public function redisClusterTestPatch()
+    {
+        \Swoole\Runtime::enableCoroutine(true, $flags = SWOOLE_HOOK_ALL);
+        $s = microtime(true);
+        for($i=0;$i<3000;$i++){
+            go(function () use($i) {
+                $parameters = [
+                    'tcp://10.255.0.171:7001',
+                    'tcp://10.255.0.171:7002',
+                    'tcp://10.255.0.171:7003',
+                    'tcp://10.255.0.171:7004',
+                    'tcp://10.255.0.171:7005',
+                    'tcp://10.255.0.171:7006'
+                ];
+                $options = [
+                    'cluster' => 'redis'
+                ];
+                $client = new \Predis\Client($parameters, $options);
+                $client->set('redisTestPatch_'.$i, 12);
+            });
+        }
+        $used_time = (microtime(true) - $s);
+        $this->writeJson(200, ['redisClusterTestPatch'=>1, 'used_time'=>$used_time], 'redisClusterTestPatch');
     }
 
     public function mysqlTest()
@@ -84,7 +132,7 @@ class Index extends Basic
             }
         });
         $used_time = (microtime(true) - $s);
-        $this->writeJson(200, ['mysqlTest'=>1, 'used_time'=>$used_time], '吃了');
+        $this->writeJson(200, ['mysqlTest'=>1, 'used_time'=>$used_time], 'mysqlTest');
     }
 
     public function mysqlTestPatch()
@@ -117,14 +165,14 @@ class Index extends Basic
             });
         }
         $used_time = (microtime(true) - $s);
-        $this->writeJson(200, ['mysqlTestPatch'=>1, 'used_time'=>$used_time], '吃了');
+        $this->writeJson(200, ['mysqlTestPatch'=>1, 'used_time'=>$used_time], 'mysqlTestPatch');
     }
 
     public function logTest(){
         $s = microtime(true);
         \HP\Log\Log::info('123123123' ,['sdf'=>12, 'abd'=>2]);
         $used_time = (microtime(true) - $s);
-        $this->writeJson(200, ['logTest'=>1, 'used_time'=>$used_time], '吃了');
+        $this->writeJson(200, ['logTest'=>1, 'used_time'=>$used_time], 'logTest');
     }
 
     public function mqTest(){
